@@ -11,7 +11,7 @@ const reload = browserSync.reload;
 const $webpack = require("webpack-stream");
 const webpack = require("webpack");
 const del = require("del");
-const ghPages = require('gulp-gh-pages');
+const ghPages = require("gulp-gh-pages");
 
 // стили
 gulp.task("styles", () => {
@@ -135,7 +135,7 @@ gulp.task("watch", () => {
 
 // GULP:DEPLOY
 gulp.task("deploy", function () {
-  return gulp.src(`${config.DIST_DIR}`)
+  return gulp.src("./dist/**/*")
     .pipe(ghPages());
 });
 

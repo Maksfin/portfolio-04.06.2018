@@ -11,6 +11,7 @@ const reload = browserSync.reload;
 const $webpack = require("webpack-stream");
 const webpack = require("webpack");
 const del = require("del");
+const ghPages = require('gulp-gh-pages');
 
 // стили
 gulp.task("styles", () => {
@@ -22,7 +23,9 @@ gulp.task("styles", () => {
     .pipe($gp.rename("main.min.css"))
     .pipe($gp.if(env === "development", $gp.sourcemaps.write()))
     .pipe(gulp.dest(`${config.DIST_DIR}`))
-    .pipe(reload({ stream: true }));
+    .pipe(reload({
+      stream: true
+    }));
 });
 
 // переносим шрифты
@@ -44,7 +47,9 @@ gulp.task("scripts", () => {
     .pipe($gp.plumber())
     .pipe($webpack(require("./webpack.mpa.config"), webpack))
     .pipe(gulp.dest(`${config.DIST_DIR}`))
-    .pipe(reload({ stream: true }));
+    .pipe(reload({
+      stream: true
+    }));
 });
 
 //рендерим странички
@@ -54,7 +59,9 @@ gulp.task("pug", () => {
     .pipe($gp.plumber())
     .pipe($gp.pug())
     .pipe(gulp.dest(`${config.DIST_DIR}`))
-    .pipe(reload({ stream: true }));
+    .pipe(reload({
+      stream: true
+    }));
 });
 
 // dev сервер + livereload (встроенный)
@@ -88,7 +95,9 @@ gulp.task("svg", done => {
             .removeAttr("width")
             .removeAttr("height");
         },
-        parserOptions: { xmlMode: true }
+        parserOptions: {
+          xmlMode: true
+        }
       })
     )
     .pipe($gp.replace("&gt;", ">"))
@@ -122,6 +131,12 @@ gulp.task("watch", () => {
   gulp.watch(`${config.SRC_DIR}/scripts/**/*.js`, gulp.series("scripts"));
   gulp.watch(`${config.SRC_DIR}/fonts/*`, gulp.series("fonts"));
   gulp.watch(`${config.VIEWS_DIR}/**/*.pug`, gulp.series("pug"));
+});
+
+// GULP:DEPLOY
+gulp.task("deploy", function () {
+  return gulp.src(`${config.DIST_DIR}`)
+    .pipe(ghPages());
 });
 
 // GULP:DEV
